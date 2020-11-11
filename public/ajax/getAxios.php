@@ -53,26 +53,31 @@ if ($sqlAUTH == 1) {
 
 writeLogs("$sqlQuery", 'Axios.txt');
 // извлекаем из параметов имена переменных, с которыми нам нужно выполнить запрос
-if ($sqlParams == ''){
+if ($sqlParams === ''){
   $paramList = array();
 }else {
   $paramList = explode(',', $sqlParams);
 }
 $bindParams = array();
 // получаем нужные параметры из запроса пост
-foreach ($paramList as $param) {
+foreach ($paramList as $sourceParam) {
+  if (mb_strpos($sourceParam, ':') === 1){
+    $param = mb_substr($sourceParam, 2);
+  }else{
+    $param = $sourceParam;
+  }
   if (isset($_POST[$param])){
     writeLogs("Параметр $param =" . $_POST[$param], 'Axios.txt');
     $postValue = $_POST[$param];
     // проверяем наличие списка параметров для in
     if (strpos($postValue,',') === false ){
-      $bindParams[$param] = $postValue;
+      $bindParams[$sourceParam] = $postValue;
     }else{
       $postValue = explode(',', $postValue);
       // если нашли запятую, то создаем несколько переменных с индесом
       $inParams = '';
       foreach ($postValue as $key => $value) {
-        $bindParams[$param . $key] = $value;
+        $bindParams[$sourceParam . $key] = $value;
         // in (:kod_group) OR :kod_group = -2
         if ($inParams !== ''){
           $inParams .= ', ';
@@ -81,18 +86,43 @@ foreach ($paramList as $param) {
       }
       writeLogs("Список параметров по разрбору $inParams", 'Axios.txt');
       $sqlQuery = str_replace("in (:$param)", "in ($inParams)", $sqlQuery);
-      $bindParams[$param] = -1;
+      $bindParams[$sourceParam] = -1;
     }
   }else{
-    $bindParams[$param] = -2;
+    $bindParams[$sourceParam] = -2;
   }
-  
 }
 writeLogs($sqlQuery, 'Axios.txt');
 writeLogs(json_encode($bindParams), 'Axios.txt');
 
 $stm = $pdo->prepare($sqlQuery);
-$stm->execute($bindParams);
+foreach($bindParams as $key => $value){
+  $pdoParam = PDO::PARAM_INT;
+  if (strpos($key,':') === 1 ){
+    switch (mb_substr($key, 0, 1)) {
+      case 's':
+        $pdoParam = PDO::PARAM_STR;
+        break;
+      case 'i':
+        $pdoParam = PDO::PARAM_INT;
+        break;
+      case 'l':
+        $pdoParam = PDO::PARAM_LOB;
+        break;
+      default:
+        $pdoParam = PDO::PARAM_INT;
+        break;
+    }
+    $key = mb_substr($key, 2);
+  }
+  ${$key} = $value;
+  $stm->bindParam(":$key", ${$key}, $pdoParam);
+  writeLogs("\$stm->bindParam(':$key', $$key, PDO::PARAM_INT)", 'Axios.txt');
+}
+
+$stm->execute();
+// $stm->execute($bindParams);
+
 // проверяем наличие ошибок
 $arr = $stm->errorInfo();
 if ($arr[0] !== "00000"){
