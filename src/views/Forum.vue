@@ -2,9 +2,13 @@
   <div>
     <h2 class="center">Форум</h2>
     <div class="collection">
-     <div class="collection-item purple lighten-3">
+     <div class="collection-item blue lighten-3">
        <div class="row">
-        <h5 class="col s8">Тема</h5>
+        <h5 class="col s2">Тема</h5>
+        <div class="input-field col s6">
+          <input id="search" type="text" v-model="search">
+          <label for="search">Введите текст для поиска</label>
+        </div>
         <h6 class="col s1">Сообщений</h6>
         <h6 class="col s2">Добавлен</h6>
         <h6 class="col s1">Автор</h6>
@@ -25,6 +29,14 @@ export default {
   components: {
     Topic
   },
+  data: ()=> ({
+    search: ''
+  }),
+  watch: {
+    search(){
+      this.fetchData({data: { sqlname: "getForumTheme", theme: '%'+ this.search +'%' },stateName: "forum/forums"})
+    }
+  },
   computed: {
     ...mapGetters(["postList", "forumList", "userList"]),
   },
@@ -33,7 +45,7 @@ export default {
   },
   mounted() {
     this.fetchData({data: { sqlname: "getUsers" },stateName: "forum/users"})
-    this.fetchData({data: { sqlname: "getForumTheme" },stateName: "forum/forums"})
+    this.fetchData({data: { sqlname: "getForumTheme", theme: '%'+ this.search +'%' },stateName: "forum/forums"})
   },
 };
 </script>

@@ -2,13 +2,14 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from './axios'
 import shifr from './functions/shifr'
-import billing from './billing'
+
 
 Vue.use(Vuex)
-
-import forum from './forum'
-import autorization from './autorization'
-import admin from './admin'
+import billing from './modules/billing'
+import forum from './modules/forum'
+import autorization from './modules/autorization'
+import admin from './modules/admin'
+import gallery from './modules/gallery'
 export default new Vuex.Store({
     state: {},
     mutations: {
@@ -84,6 +85,7 @@ export default new Vuex.Store({
         forum,
         autorization,
         billing,
-        admin
+        admin,
+        gallery
     }
 })
