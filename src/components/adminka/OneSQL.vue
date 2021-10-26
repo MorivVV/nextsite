@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div>
     <OneSQLedit v-if="edit.val" :edit="edit" :ssq="ssq" />
     <OneSQLview v-else :edit="edit" :ssq="ssq" />
   </div>
@@ -8,6 +8,7 @@
 <script>
 import OneSQLview from './OneSQLview'
 import OneSQLedit from './OneSQLedit'
+import { mapActions } from 'vuex'
 export default {
   components: {
     OneSQLedit,
@@ -18,6 +19,9 @@ export default {
   },
   data: ()=>({
     edit: {val:false}
-  })
+  }),
+  methods: {
+    ...mapActions(['fetchData'])
+  }
 }
 </script>

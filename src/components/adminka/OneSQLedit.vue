@@ -5,19 +5,19 @@
         <div class="card-content">
           <div class="row">
             <div class="input-field col s2">
-              <input :id="'sql_name'+ssq.ID" type="text" v-model="ssq.sql_name" />
-              <label :for="'sql_name'+ssq.ID">sql_name</label>
+              <input :id="'sql_name'+ssq.id" type="text" class="purple-text b" v-model="ssq.sql_name" />
+              <label :for="'sql_name'+ssq.id">sql_name</label>
             </div>
             <div class="input-field col s4">
-              <input :id="'sql_params'+ssq.ID" type="text" v-model="ssq.sql_params" />
-              <label :for="'sql_params'+ssq.ID">Входные параметры</label>
+              <input :id="'sql_params'+ssq.id" type="text" v-model="ssq.sql_params" />
+              <label :for="'sql_params'+ssq.id">Входные параметры</label>
             </div>
             <div class="input-field col s2">
-              <input :id="'result'+ssq.ID" type="text" v-model="ssq.result" />
-              <label :for="'result'+ssq.ID">Отдаваемый параметр</label>
+              <input :id="'result'+ssq.id" type="text" v-model="ssq.result" />
+              <label :for="'result'+ssq.id">Отдаваемый параметр</label>
             </div>
             <div class="col s2">
-              <label>Для авторизованых</label>
+              <label>Требуется авторизация</label>
               <div class="switch">
                 <label>
                   Off
@@ -30,7 +30,7 @@
             <div class="col s2">
               <div class="switch">
                 <label>
-                  Сохранить
+                  Просмотр
                   <input type="checkbox" v-model="edit.val">
                   <span class="lever"></span>
                   Редактирование
@@ -39,11 +39,10 @@
             </div>
           </div>
           <div class="row">
-            <div class="col s12">
-              <div class="input-field col s12">
-                <textarea rows="10" :id="'query'+ssq.ID"  v-model="ssq.sql_query"></textarea>
-                <label :for="'query'+ssq.ID">Текст SQL запроса</label>
-              </div>
+            <div class="input-field col s12">
+              <textarea :id="'query'+ssq.id"  v-model="ssq.sql_query"></textarea>
+              <label :for="'query'+ssq.id">Текст SQL запроса</label>
+              <div class="btn right" @click="saveChange"><i class="material-icons">save</i></div>
             </div>
           </div>
         </div>
@@ -53,14 +52,41 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 export default {
   props: {
     ssq: Object,
     edit: Object
   },
+  computed: {
+    ...mapState('admin', ['update'])
+  },
+  watch: {
+    update(newVal){
+      console.log(newVal)
+      if (newVal.count === 1){
+        this.$M.toast({html: "Сохранение прошло успешно"})
+        this.edit.val = false
+      }else{
+        this.$M.toast({html: "Сохранение не удалось"})
+      }
+    }
+  },
+  methods: {
+    ...mapActions(['fetchData']),
+    saveChange(){
+      this.fetchData({data:{sqlname: 'updateSSQ', ...this.ssq}, stateName: 'admin/update'})
+    }
+  },
   mounted(){
-    this.$M.textareaAutoResize(document.getElementById('query'+this.ssq.ID));
+    this.$M.textareaAutoResize(document.getElementById('query'+this.ssq.id));
     this.$M.updateTextFields()
   }
 }
 </script>
+
+<style scoped>
+.b {
+      font-weight: 500;
+}
+</style>

@@ -17,8 +17,8 @@
       <div class="collection-item" v-for="f in forumList" :key="f.id">
         <Topic :topic="f" />
       </div>
-      <div id="editorjs"></div>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -38,14 +38,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["postList", "forumList", "userList"]),
+    ...mapGetters('forum',["forumList", "userList"]),
   },
   methods: {
     ...mapActions(["fetchData"]),
   },
   mounted() {
-    this.fetchData({data: { sqlname: "getUsers" },stateName: "forum/users"})
-    this.fetchData({data: { sqlname: "getForumTheme", theme: '%'+ this.search +'%' },stateName: "forum/forums"})
+    this.fetchData(
+      {
+        data: { 
+          from: "bd_users" 
+        },
+        stateName: "forum/users"})
+    this.fetchData({data: { from: "bd_theme_post"  },stateName: "forum/forums"})
   },
 };
 </script>

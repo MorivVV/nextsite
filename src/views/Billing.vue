@@ -76,12 +76,11 @@ export default {
   computed: {
     ...mapGetters(["meterList", "billHead", "homeList", "billDateList"]),
     fetchList() {return [
-      {data: { sqlname: "getHome", kod_home: this.home }, stateName: "billing/home"},
-      {data: { sqlname: "getMeters", kod_home: this.home }, stateName: "billing/meters"},
-      {data: { sqlname: "curBilling", kod_home: this.home, bil_date: this.dateBilling }, stateName: "billing/bill"},
-      {data: { sqlname: "getDateBilling", kod_home: this.home }, stateName: "billing/billdate"},
-      {data: { sqlname: "getPrevBilling", kod_home: this.home, bil_date: this.dateBilling }, stateName: "billing/prevBill"},
-      {data: { sqlname: "getCurrentPrice", kod_home: this.home, bil_date: this.dateBilling }, stateName: "billing/price"},
+      {url: "api/restGet",data:{fields: [],from: "объект_квартира", kod_home: this.home }, stateName: "billing/home"},
+      {url: "api/restGet",data:{fields: ["DISTINCT", "s.id:ID", "s.namien:METER"],from: "объект_счетчики:s", filter: { "s.KOD_HOME": this.home }}, stateName: "billing/meters"},
+      {url: "api/restGet",data:{fields: ["b.KOD_METER","DATE_FORMAT(b.DATE_BIL,'%d/%m/%Y'):DATE_BIL","b.BILLING"],from: ["billing:b","объект_счетчики:s"], join:["b.KOD_METER=s.ID"], filter: {"b.DATE_BIL": {fields: ["MAX(bb.DATE_BIL):max"], from: "billing:bb", filter: {"bb.DATE_BIL":this.dateBilling, "bb.KOD_METER": "${b.KOD_METER}"}}, "s.KOD_HOME": this.home }}, stateName:  "billing/billdate"},
+      {url: "api/restGet",data:{fields: ["b.KOD_METER","DATE_FORMAT(b.DATE_BIL,'%d/%m/%Y'):DATE_BIL","b.BILLING"],from: ["billing:b","объект_счетчики:s"], join:["b.KOD_METER=s.ID"], filter: {"b.DATE_BIL": {fields: ["MAX(bb.DATE_BIL):max"], from: "billing:bb", filter: {"bb.DATE_BIL":"<:"+this.dateBilling, "bb.KOD_METER": "${b.KOD_METER}"}}, "s.KOD_HOME": this.home }}, stateName: "billing/prevBill"},
+      {url: "api/restGet",data:{fields: ["s.ID:KOD_METER","DATE_FORMAT(r.DATE_BEG,'%d/%m/%Y'):DATEPRICE","r.BILLING:PRICE"],from: ["объект_расценки:r","объект_счетчики:s"], join:["s.KOD_TYPE=r.KOD_TYPE"], filter: {"r.DATE_BEG": {fields: ["max(rr.DATE_BEG):max"], from: "объект_расценки:rr", filter: {"rr.DATE_BEG":"<=:"+this.dateBilling, "rr.KOD_TYPE": "${s.KOD_TYPE}"}}, "s.KOD_HOME": this.home } }, stateName: "billing/price"},
     ]}
   },
   methods: {

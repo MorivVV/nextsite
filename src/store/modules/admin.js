@@ -1,7 +1,25 @@
 // import getCookie from './functions/cookies'
 export default {
+    namespaced: true,
     state: {
-        sqlQuery: []
+        addQuery: [],
+        search: "",
+        searchCount: 0,
+        resultMin: 0,
+        perPage: 10,
+        sqlQuery: [],
+        dataTypes: [],
+        update: '',
+        tables: [],
+        tableFields: [],
+        tableList: [],
+        tanksMaps: [],
+        gameObjects: [],
+        fieldList: [],
+        pg_namespace: [],
+        primarykey: [],
+        dataTable: [],
+        tableData: []
     },
     mutations: {},
     actions: {},

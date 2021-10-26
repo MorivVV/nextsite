@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <navBar :Logo="'Наш сайт'" />
+    <navBar :Logo="'NextSite'" />
     <router-view/>
     <Footer />
   </div>
@@ -16,3 +16,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.pointer {
+  cursor: pointer;
+}
+</style>

@@ -4,7 +4,7 @@
     <h4 class="center">Авторизируйтесь</h4>
     <div class="row">
       <div class="input-field col s12">
-        <input id="last_name" required v-model="login" type="text"  class="validate">
+        <input v-focus id="last_name" required v-model="login" type="text"  class="validate">
         <label for="last_name">Логин</label>
       </div>
     </div>

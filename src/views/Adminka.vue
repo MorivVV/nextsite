@@ -1,30 +1,19 @@
 <template>
-  <div>Админrf
-    <OneSQL v-for="ssq in sqlQuery" :ssq="ssq" :key="ssq.ID" />
+  <div class="row">
+    <div class="col s1">
+      <NavAdmin />
+    </div>
+    <div class="col s11">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
-import OneSQL from '../components/adminka/OneSQL'
-import { mapActions, mapGetters } from "vuex";
+import NavAdmin from "../components/adminka/NavAdmin";
 export default {
   components: {
-    OneSQL
-  },
-  computed: {
-    ...mapGetters(['sqlQuery']),
-  },
-  methods: {
-    ...mapActions(['fetchData'])
-  },
-  mounted(){
-    this.fetchData({data:{sqlname: 'ssq'}, stateName: 'admin/sqlQuery'})
+    NavAdmin
   }
-}
+};
 </script>
-
-<style scoped>
-.b {
-      font-weight: 500;
-}
-</style>

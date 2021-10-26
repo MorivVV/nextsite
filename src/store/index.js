@@ -9,7 +9,9 @@ import billing from './modules/billing'
 import forum from './modules/forum'
 import autorization from './modules/autorization'
 import admin from './modules/admin'
+import games from './modules/games'
 import gallery from './modules/gallery'
+import mvideo from './modules/mvideo'
 export default new Vuex.Store({
     state: {},
     mutations: {
@@ -37,18 +39,29 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        fetchData({ commit }, param) {
-            let data = new FormData()
-            let object = param.data
+        fetchData({ commit, rootGetters }, param) {
+            let data = param.data
             let url = '/ajax/getAxios.php'
+            let opt = {
+                headers: {
+                    post: {
+                        "V-Token": rootGetters.token
+                    }
+                }
+            }
             if (typeof param['url'] !== "undefined") {
                 url = param.url
             }
-            for (const key in object) {
-                data.append(key, object[key])
-            }
-            axios.post(url, data)
-                .then(res => { commit('updateState', { state: param.stateName, data: res.data }) })
+            return axios.post(url, data, opt)
+                .then(res => {
+                    if ("stateName" in param) {
+                        if (res.data === "Нет авторизации") {
+                            res.data = []
+                        }
+                        commit('updateState', { state: param.stateName, data: res.data })
+                    }
+                    return res.data;
+                })
         },
         authorizate({ commit }, param) {
             return new Promise((resolve, reject) => {
@@ -65,8 +78,10 @@ export default new Vuex.Store({
                     })
                     .then(res => {
                         if (res.data !== 'password not authorized!!!') {
+                            axios.defaults.headers.post['V-Token'] = res.data.token;
                             commit('updateState', { state: 'autorization/user', data: res.data.user })
                             commit('updateState', { state: 'autorization/token', data: res.data.token })
+                            commit('updateState', { state: 'autorization/kod_user', data: res.data.kod_user })
                             resolve(res)
                         } else {
                             reject(res)
@@ -86,6 +101,8 @@ export default new Vuex.Store({
         autorization,
         billing,
         admin,
+        games,
+        mvideo,
         gallery
     }
 })

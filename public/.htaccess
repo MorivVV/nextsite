@@ -6,6 +6,8 @@ Options All -Indexes
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  RewriteLog   rewrite.log
+  RewriteRule ^api/(.*)$ $1.php [L]
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

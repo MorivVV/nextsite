@@ -1,5 +1,5 @@
 <template>
-  <div :class="curRank.COLOR + '-text'">
+  <div :class="curRank.color + '-text'">
     {{curRank.RANK}}
   </div>
 </template>
@@ -11,12 +11,13 @@ export default {
     rank: Number
   },
   computed:{
-    ...mapGetters(['rankList']),
+    ...mapGetters('forum',['rankList']),
     curRank(){
-      if (this.rankList.length === 0){
-        return {RANK: ''}
+      let rank = {RANK: '', color: ""}
+      if (this.rankList.length > 0){
+        rank = this.rankList.filter(e=>+e.ID_RANK === +this.rank)[0]
       }
-      return this.rankList[this.rank]
+      return rank
     }
   }
 }

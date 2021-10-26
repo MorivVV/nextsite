@@ -69,8 +69,8 @@ foreach ($paramList as $sourceParam) {
   if (isset($_POST[$param])){
     writeLogs("Параметр $param =" . $_POST[$param], 'Axios.txt');
     $postValue = $_POST[$param];
-    // проверяем наличие списка параметров для in
-    if (strpos($postValue,',') === false ){
+    // проверяем наличие списка параметров для in в запросах SELECT
+    if (substr($sqlQuery,0,6) !== "SELECT" ||  strpos($postValue,',') === false ){
       $bindParams[$sourceParam] = $postValue;
     }else{
       $postValue = explode(',', $postValue);

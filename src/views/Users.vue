@@ -32,11 +32,11 @@ export default {
     ...mapActions(["fetchData"]),
   },
   computed: {
-    ...mapGetters(["userList"]),
+    ...mapGetters('forum',["userList"]),
   },
   mounted(){
-    this.fetchData({data:{sqlname: 'getUsers'}, stateName: 'forum/users'})
-    this.fetchData({data:{sqlname: 'getRanks'}, stateName: 'forum/ranks'})
+    this.fetchData({url: "api/restGet",data:{fields: [],from: 'bd_users'}, stateName: 'forum/users'})
+    this.fetchData({url: "api/restGet",data:{fields: [],from: 'bd_rank'}, stateName: 'forum/ranks'})
   }
 };
 </script>

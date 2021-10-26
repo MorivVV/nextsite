@@ -74,11 +74,13 @@ if (isset($_POST['answer'])){
   writeLogs("answer = $answer", 'Autorization.txt');
   if ($answer === $userQuestion) {
     $hash_user = md5(microtime().$_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT']);
-    $stm = $pdo->prepare("UPDATE bd_users SET SESSEION_HASH = ? WHERE ID= ?");
-    $stm->execute(array($hash_user, $userId));
+    $stm = $pdo->prepare("UPDATE bd_users SET SESSEION_HASH = ?, IP=? WHERE ID= ?");
+    $stm->execute(array($hash_user, $_SERVER['REMOTE_ADDR'], $userId));
     $succesAutorize['token'] = $hash_user;
     $succesAutorize['user'] = $login;
+    $succesAutorize['kod_user'] = $userId;
     writeLogs("Выдан токен: $hash_user", 'Autorization.txt');
+    setcookie("kod_user" , $userId, time()+36000, "/");//продлеваем сессию на час
     setcookie("USER" , $login, time()+36000, "/");//продлеваем сессию на час
     setcookie("HASHIP", $hash_user, time()+36000, "/");//установка куки с информацией о браузере, адресе и пароле пользователя
     echo json_encode($succesAutorize);

@@ -17,7 +17,7 @@
               <p>{{ssq.result}}</p>
             </div>
             <div class="col s2">
-              <label>Для авторизованых</label>
+              <label>Требуется авторизация</label>
               <div class="switch">
                 <label>
                   Off
@@ -54,3 +54,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.b {
+      font-weight: 500;
+}
+</style>

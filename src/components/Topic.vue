@@ -1,8 +1,8 @@
 <template>
   <div class="row">
-    <router-link :to="'/forum/' + topic.ID"><div class="col s8"> {{topic.THEME}} </div></router-link>
-    <div class="col s1">{{topic.COUNT}}</div>
-    <div class="col s2">{{topic.TIME_ADD}}</div>
+    <router-link :to="'/forum/' + topic.id + '/view'"><div class="col s8"> {{topic.theme}} </div></router-link>
+    <div class="col s1">{{topic.id}}</div>
+    <div class="col s2">{{topic.timestamp}}</div>
     <div class="col s1">{{userInfo.USER_NAME}}</div>
   </div>
 </template>
@@ -14,13 +14,13 @@ export default {
     topic: Object
   },
   computed:{
-    ...mapGetters(['userList']),
+    ...mapGetters('forum',['userList']),
     userInfo(){
       if (this.userList.length === 0){
         return {USER_NAME: ""}
       }
-      let uid = this.topic.AUTHOR
-      return this.userList[uid]
+      let uid = this.topic.kod_user
+      return this.userList.filter(e=>+e.ID === +uid)[0].USER_NAME
     }
   },
   methods:{
